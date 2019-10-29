@@ -189,9 +189,9 @@ private OrderBook book = new OrderBook();
 
     @Test
     void consume_iceberg_orders_in_proper_order() {
-        Order buy_order = createBuyOrder(10, 10);
         Order sell_order_first = createIcebergSellOrder(30, 10,5);
         Order sell_order_second = createIcebergSellOrder(30, 10,3);
+        Order buy_order = createBuyOrder(10, 10);
 
         book.executeOrder(sell_order_first);
         book.executeOrder(sell_order_second);
