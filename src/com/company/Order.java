@@ -2,13 +2,17 @@ package com.company;
 
 import java.util.Scanner;
 
-public class Order{
-    public long  timestamp;
+public class Order {
+    public long uid;
     public TransactionType type;
-    public int uid;
     public short price;
     public int quantity;
     public int peak_size;
+
+    @Override
+    public int hashCode() {
+        return (int) uid;
+    }
 
     public static Order parseOrder(String str){
         return Order.parseOrder(new Scanner(str));

@@ -2,15 +2,13 @@ package com.company;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderBookTest {
 private OrderBook book = new OrderBook();
     private Order createSellOrder(int quantity, int price) {
         Order sell_order = new Order();
-        sell_order.timestamp =buy_order_id++;
+        sell_order.uid =buy_order_id++;
         sell_order.type = TransactionType.SELL;
         sell_order.quantity = quantity;
         sell_order.price = (short) price;
@@ -20,7 +18,7 @@ private OrderBook book = new OrderBook();
 
     private Order createIcebergSellOrder(int quantity, int price, int peak_size) {
         Order sell_order = new Order();
-        sell_order.timestamp =buy_order_id++;
+        sell_order.uid = buy_order_id++;
         sell_order.type = TransactionType.SELL;
         sell_order.quantity = quantity;
         sell_order.price = (short) price;
@@ -30,7 +28,7 @@ private OrderBook book = new OrderBook();
 
     private Order createIcebergBuyOrder(int quantity, int price, int peak_size) {
         Order buy_order = new Order();
-        buy_order.timestamp =buy_order_id++;
+        buy_order.uid =buy_order_id++;
         buy_order.type = TransactionType.BUY;
         buy_order.quantity = quantity;
         buy_order.price = (short) price;
@@ -40,7 +38,7 @@ private OrderBook book = new OrderBook();
 
     private Order createBuyOrder(int quantity, int price) {
         Order buy_order = new Order();
-        buy_order.timestamp =buy_order_id++;
+        buy_order.uid =buy_order_id++;
         buy_order.type = TransactionType.BUY;
         buy_order.quantity = quantity;
         buy_order.price = (short) price;

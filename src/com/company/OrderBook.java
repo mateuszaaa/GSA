@@ -5,6 +5,7 @@ import java.util.*;
 public class OrderBook {
     private Set<Order> buys = new TreeSet<>(new OrderComparator());
     private Set<Order> sels = new TreeSet<>(new OrderComparator());
+    private Map<Order, Integer> orders = new HashMap<>();
 
     public void executeOrder(Order order){
         if(order.type == TransactionType.BUY){
@@ -19,12 +20,15 @@ public class OrderBook {
         Order buy = null;
         Order sell = null;
         while((buy_it.hasNext() || buy != null ) && (sell != null || sel_it.hasNext()) ){
+
             if(buy == null){
                 buy = (Order) buy_it.next();
             }
+
             if(sell == null){
                 sell = (Order) sel_it.next();
             }
+
             if(buy.price >= sell.price) {
                 int quantity = Math.min(buy.quantity, sell.quantity);
                 buy.quantity -= quantity;
@@ -39,6 +43,9 @@ public class OrderBook {
                     buy_it.remove();
                     buy = null;
                 }
+            }else{
+                buy = null;
+                sell = null;
             }
         }
 
