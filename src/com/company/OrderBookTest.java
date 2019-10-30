@@ -201,6 +201,51 @@ private OrderBook book = new OrderBook();
         assertEquals(27, sell_order_second.quantity);
     }
 
+    @Test
+    void consume_iceberg_orders_in_proper_order2() {
+        Order buy_order_first = createIcebergBuyOrder(10, 10,2);
+        Order buy_order_second = createIcebergBuyOrder(10, 10, 1);
+        Order sell_order = createSellOrder(5, 10);
+
+        book.executeOrder(buy_order_first);
+        book.executeOrder(buy_order_second);
+        book.executeOrder(sell_order);
+
+        assertEquals(6, buy_order_first.quantity);
+        assertEquals(9, buy_order_second.quantity);
+        assertEquals(0, book.getSellOrders().length);
+    }
+
+    @Test
+    void consume_iceber_sell_order_with_iceberg_buy_order() {
+        Order buy_order_first = createIcebergBuyOrder(20, 10,5);
+        Order buy_order_second = createIcebergBuyOrder(10, 10, 3);
+        Order sell_order = createIcebergSellOrder(15, 10,5);
+
+        book.executeOrder(buy_order_first);
+        book.executeOrder(buy_order_second);
+        book.executeOrder(sell_order);
+
+        assertEquals(10, buy_order_first.quantity);
+        assertEquals(5, buy_order_second.quantity);
+        assertTrue(book.getSellOrders().length == 0);
+    }
+
+    @Test
+    void consume_iceber_sell_with_peak_size_smaller_than_buy_orders_order_with_iceberg_buy_order() {
+        Order buy_order_first = createIcebergBuyOrder(20, 10,5);
+        Order buy_order_second = createIcebergBuyOrder(10, 10, 3);
+        Order sell_order = createIcebergSellOrder(15, 10,2);
+
+        book.executeOrder(buy_order_first);
+        book.executeOrder(buy_order_second);
+        book.executeOrder(sell_order);
+
+        assertEquals(10, buy_order_first.quantity);
+        assertEquals(5, buy_order_second.quantity);
+        assertTrue(book.getSellOrders().length == 0);
+    }
+
 
 
 }

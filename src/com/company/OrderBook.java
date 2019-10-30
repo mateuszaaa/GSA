@@ -4,8 +4,8 @@ import java.util.*;
 
 public class OrderBook {
     private Map<Order, Integer> orders = new HashMap<>();
-    private Set<Order> buys = new TreeSet<>(new OrderComparator(orders));
-    private Set<Order> sels = new TreeSet<>(new OrderComparator(orders));
+    private PriorityQueue<Order> buys = new PriorityQueue<>(new OrderComparator(orders));
+    private PriorityQueue<Order> sels = new PriorityQueue<>(new OrderComparator(orders));
     private int id_counter;
 
     public void executeOrder(Order order){
@@ -15,46 +15,32 @@ public class OrderBook {
             executeSellOrder(order);
         }
 
-        Iterator buy_it = buys.iterator();
-        Iterator sel_it = sels.iterator();
 
-        Order buy = null;
-        Order sell = null;
-        while((buy_it.hasNext() || buy != null ) && (sell != null || sel_it.hasNext()) ){
+        while( ! buys.isEmpty() && ! sels.isEmpty() ){
 
-            if(buy == null){
-                buy = (Order) buy_it.next();
-            }
+            Order buy = buys.peek();
+            Order sell = sels.peek();
 
-            if(sell == null){
-                sell = (Order) sel_it.next();
-            }
 
            if(buy.price >= sell.price) {
-                int quantity = Math.min(buy.peak_size, sell.peak_size);
+                //TODO optimize removing only buy or sell
+                int quantity = Math.min(Math.min(buy.peak_size, buy.quantity), Math.min(sell.peak_size, sell.quantity));
                 buy.quantity -= quantity;
                 sell.quantity -= quantity;
 
-                if (sell.quantity == 0) {
-                    sel_it.remove();
-                    sell = null;
-                }else{
-                    sel_it.remove();
+                sels.poll();
+                buys.poll();
+
+                if (sell.quantity != 0) {
                     executeSellOrder(sell);
-                    sell = null;
                 }
 
-                if (buy.quantity == 0) {
-                    buy_it.remove();
-                    buy = null;
-                }else{
-                    buy_it.remove();
+                if (buy.quantity != 0) {
                     executeBuyOrder(buy);
-                    buy = null;
                 }
+
             }else{
-                buy = null;
-                sell = null;
+               break;
             }
         }
 
